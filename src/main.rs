@@ -1,4 +1,5 @@
 use bevy::{prelude::*, window::PrimaryWindow};
+use bevy::window::{WindowMode, MonitorSelection};
 use rand::{rngs::ThreadRng, rng, Rng};
 
 fn main() {
@@ -8,8 +9,7 @@ fn main() {
                 .set(WindowPlugin {
                     primary_window: Some(Window {
                         title: String::from("Flappy Bird"),
-                        position: WindowPosition::Centered(MonitorSelection::Primary),
-                        resolution: Vec2::new(512., 512.).into(),
+                        mode: WindowMode::BorderlessFullscreen(MonitorSelection::Primary),
                         ..Default::default()
                     }),
                     ..Default::default()
