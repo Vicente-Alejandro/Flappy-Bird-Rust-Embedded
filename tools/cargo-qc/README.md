@@ -10,7 +10,12 @@ When executed, `cargo-qc` sequentially runs:
 2. **Linter:** `cargo clippy -- -D warnings` (Catches bugs, unidiomatic code, and performance issues)
 3. **Compiler:** `cargo build` (Ensures the codebase compiles without errors)
 
-If any step fails, the tool halts and provides immediate feedback. If all steps pass, you get a clean bill of health.
+### 📊 Traceability & History Logging
+`cargo-qc` goes beyond simply checking code—it maintains a persistent, human-readable record of your project's health:
+- **Auto-Versioning:** Automatically detects your current project version using `cargo pkgid`.
+- **Markdown History:** Appends the results to a `.qc_history.md` table, giving you a beautiful visual log of every run (Date | Version | Fmt | Clippy | Build | Overall).
+- **Error Logging:** If any check fails, the tool still proceeds to test the others, and captures the exact terminal error output into a `.qc_errors.log` file for later auditing.
+- **Smart Directory Detection:** Saves these logs in the `tools/cargo-qc` directory if it exists, otherwise places them directly in your project root.
 
 ## 📦 Installation
 
