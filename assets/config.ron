@@ -1,0 +1,13 @@
+GameConfig(
+    pixel_ratio: 4.0,
+    flap_force: 500.0,
+    gravity: 2000.0,
+    velocity_to_rotation_ratio: 7.5,
+    obstacle_amount: 5,
+    obstacle_width: 32.0,
+    obstacle_height: 144.0,
+    obstacle_vertical_offset: 30.0,
+    obstacle_gap_size: 15.0,
+    obstacle_spacing: 60.0,
+    obstacle_scroll_speed: 150.0,
+)

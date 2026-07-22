@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+pub mod config;
+
 pub struct CorePlugin;
 
 impl Plugin for CorePlugin {

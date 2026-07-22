@@ -1,6 +1,7 @@
 use bevy::window::{MonitorSelection, WindowMode};
 use bevy::{prelude::*, window::PrimaryWindow};
 use rand::{Rng, rng, rngs::ThreadRng};
+use std::fs;
 
 mod core;
 mod game;
@@ -8,7 +9,16 @@ mod hardware;
 mod ui;
 
 fn main() {
+    tracing_subscriber::fmt::init();
+    info!("Starting Flappy Bird...");
+
+    let config_str = fs::read_to_string("assets/config.ron")
+        .expect("Failed to read assets/config.ron. Does the file exist?");
+    let config: core::config::GameConfig =
+        ron::from_str(&config_str).expect("Failed to parse config.ron. Is the syntax correct?");
+
     App::new()
+        .insert_resource(config)
         .add_plugins(
             DefaultPlugins
                 .set(WindowPlugin {
@@ -28,22 +38,9 @@ fn main() {
         .add_plugins(hardware::HardwarePlugin)
         // Legacy systems (to be refactored in v0.3.0)
         .add_systems(Startup, setup_level)
-        .add_systems(Update, (update_bird, update_obstacles))
+        .add_systems(FixedUpdate, (update_bird, update_obstacles))
         .run();
 }
-//BIRD
-const PIXEL_RATIO: f32 = 4.0;
-const FLAP_FORCE: f32 = 500.;
-const GRAVITY: f32 = 2000.;
-const VELOCITY_TO_ROTATION_RATIO: f32 = 7.5;
-//OBSTACLE
-const OBSTACLE_AMOUNT: i32 = 5;
-const OBSTACLE_WIDTH: f32 = 32.;
-const OBSTACLE_HEIGHT: f32 = 144.;
-const OBSTACLE_VERTICAL_OFFSET: f32 = 30.;
-const OBSTACLE_GAP_SIZE: f32 = 15.;
-const OBSTACLE_SPACING: f32 = 60.;
-const OBSTACLE_SCROLL_SPEED: f32 = 150.;
 
 #[derive(Resource)]
 pub struct GameManager {
@@ -59,6 +56,7 @@ fn setup_level(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     window_query: Query<&mut Window, With<PrimaryWindow>>,
+    config: Res<core::config::GameConfig>,
 ) {
     let pipe_image = asset_server.load("pipe.png");
     let window = window_query.single().unwrap();
@@ -72,61 +70,66 @@ fn setup_level(
 
     commands.spawn((
         Sprite { image: asset_server.load("bird.png"), ..Default::default() },
-        Transform::IDENTITY.with_scale(Vec3::splat(PIXEL_RATIO)),
+        Transform::IDENTITY.with_scale(Vec3::splat(config.pixel_ratio)),
         Bird { velocity: 0. },
     ));
 
     let mut rand = rng();
 
-    spawn_obstacles(&mut commands, &mut rand, 1080., &pipe_image);
+    spawn_obstacles(&mut commands, &mut rand, 1080., &pipe_image, &config);
 }
 #[derive(Component)]
 struct Obstacle {
     pipe_direction: f32,
 }
 fn update_obstacles(
-    time: Res<Time>,
+    time: Res<Time<Fixed>>,
     game_manager: Res<GameManager>,
+    config: Res<core::config::GameConfig>,
     mut obstacle_query: Query<(&mut Obstacle, &mut Transform)>,
 ) {
     let mut rand = rng();
-    let y_offset = generate_offset(&mut rand);
+    let y_offset = generate_offset(&mut rand, &config);
     for (obstacle, mut transform) in obstacle_query.iter_mut() {
-        transform.translation.x -= time.delta_secs() * OBSTACLE_SCROLL_SPEED;
+        transform.translation.x -= time.delta_secs() * config.obstacle_scroll_speed;
 
-        if transform.translation.x + OBSTACLE_WIDTH * PIXEL_RATIO / 2.
+        if transform.translation.x + config.obstacle_width * config.pixel_ratio / 2.
             < -game_manager.window_dimensions.x / 2.
         {
-            transform.translation.x += OBSTACLE_AMOUNT as f32 * OBSTACLE_SPACING * PIXEL_RATIO;
+            transform.translation.x +=
+                config.obstacle_amount as f32 * config.obstacle_spacing * config.pixel_ratio;
             transform.translation.y =
-                get_centered_pipe_position() * obstacle.pipe_direction + y_offset;
+                get_centered_pipe_position(&config) * obstacle.pipe_direction + y_offset;
         }
     }
 }
-fn get_centered_pipe_position() -> f32 {
-    (OBSTACLE_HEIGHT / 2. + OBSTACLE_GAP_SIZE) * PIXEL_RATIO
+fn get_centered_pipe_position(config: &core::config::GameConfig) -> f32 {
+    (config.obstacle_height / 2. + config.obstacle_gap_size) * config.pixel_ratio
 }
 fn spawn_obstacles(
     commands: &mut Commands,
     rand: &mut ThreadRng,
     window_width: f32,
     pipe_image: &Handle<Image>,
+    config: &core::config::GameConfig,
 ) {
-    for i in 0..OBSTACLE_AMOUNT {
-        let y_offset = generate_offset(rand);
-        let x_pos = window_width / 2. + (OBSTACLE_SPACING * PIXEL_RATIO * i as f32);
+    for i in 0..config.obstacle_amount {
+        let y_offset = generate_offset(rand, config);
+        let x_pos = window_width / 2. + (config.obstacle_spacing * config.pixel_ratio * i as f32);
         spawn_obstacle(
-            Vec3::X * x_pos + Vec3::Y * (get_centered_pipe_position() + y_offset),
+            Vec3::X * x_pos + Vec3::Y * (get_centered_pipe_position(config) + y_offset),
             1.,
             commands,
             pipe_image,
+            config,
         );
 
         spawn_obstacle(
-            Vec3::X * x_pos + Vec3::Y * (-get_centered_pipe_position() + y_offset),
+            Vec3::X * x_pos + Vec3::Y * (-get_centered_pipe_position(config) + y_offset),
             -1.,
             commands,
             pipe_image,
+            config,
         );
     }
 }
@@ -136,39 +139,42 @@ fn spawn_obstacle(
     pipe_direction: f32,
     commands: &mut Commands,
     pipe_image: &Handle<Image>,
+    config: &core::config::GameConfig,
 ) {
     commands.spawn((
         Sprite { image: pipe_image.clone(), ..Default::default() },
         Transform::from_translation(translation).with_scale(Vec3::new(
-            PIXEL_RATIO,
-            PIXEL_RATIO * -pipe_direction,
-            PIXEL_RATIO,
+            config.pixel_ratio,
+            config.pixel_ratio * -pipe_direction,
+            config.pixel_ratio,
         )),
         Obstacle { pipe_direction },
     ));
 }
-fn generate_offset(rand: &mut ThreadRng) -> f32 {
-    rand.random_range(-OBSTACLE_VERTICAL_OFFSET..OBSTACLE_VERTICAL_OFFSET) * PIXEL_RATIO
+fn generate_offset(rand: &mut ThreadRng, config: &core::config::GameConfig) -> f32 {
+    rand.random_range(-config.obstacle_vertical_offset..config.obstacle_vertical_offset)
+        * config.pixel_ratio
 }
 fn update_bird(
     mut commands: Commands,
     mut bird_query: Query<(&mut Bird, &mut Transform), Without<Obstacle>>,
     mut obstacle_query: Query<(&Transform, Entity), With<Obstacle>>,
-    time: Res<Time>,
+    time: Res<Time<Fixed>>,
     keys: Res<ButtonInput<KeyCode>>,
     game_manager: Res<GameManager>,
+    config: Res<core::config::GameConfig>,
 ) {
     if let Ok((mut bird, mut transform)) = bird_query.single_mut() {
         if keys.just_pressed(KeyCode::Space) {
-            bird.velocity = FLAP_FORCE;
+            bird.velocity = config.flap_force;
         }
 
-        bird.velocity -= time.delta_secs() * GRAVITY;
+        bird.velocity -= time.delta_secs() * config.gravity;
         transform.translation.y += bird.velocity * time.delta_secs();
 
         transform.rotation = Quat::from_axis_angle(
             Vec3::Z,
-            f32::clamp(bird.velocity / VELOCITY_TO_ROTATION_RATIO, -90., 90.).to_radians(),
+            f32::clamp(bird.velocity / config.velocity_to_rotation_ratio, -90., 90.).to_radians(),
         );
 
         let mut dead = false;
@@ -178,9 +184,9 @@ fn update_bird(
             for (pipe_transform, _entity) in obstacle_query.iter() {
                 //collision check
                 if (pipe_transform.translation.y - transform.translation.y).abs()
-                    < OBSTACLE_HEIGHT * PIXEL_RATIO / 2.
+                    < config.obstacle_height * config.pixel_ratio / 2.
                     && (pipe_transform.translation.x - transform.translation.x).abs()
-                        < OBSTACLE_WIDTH * PIXEL_RATIO / 2.
+                        < config.obstacle_width * config.pixel_ratio / 2.
                 {
                     dead = true;
                     break;
@@ -199,6 +205,7 @@ fn update_bird(
                 &mut rand,
                 game_manager.window_dimensions.x,
                 &game_manager.pipe_image,
+                &config,
             );
         }
     }
