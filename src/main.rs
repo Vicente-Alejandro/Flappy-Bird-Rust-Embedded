@@ -2,6 +2,11 @@ use bevy::{prelude::*, window::PrimaryWindow};
 use bevy::window::{WindowMode, MonitorSelection};
 use rand::{rngs::ThreadRng, rng, Rng};
 
+mod core;
+mod game;
+mod ui;
+mod hardware;
+
 fn main() {
     App::new()
         .add_plugins(
@@ -16,6 +21,12 @@ fn main() {
                 })
                 .set(ImagePlugin::default_nearest()),
         )
+        // Register domain plugins
+        .add_plugins(core::CorePlugin)
+        .add_plugins(game::GamePlugin)
+        .add_plugins(ui::UiPlugin)
+        .add_plugins(hardware::HardwarePlugin)
+        // Legacy systems (to be refactored in v0.3.0)
         .add_systems(Startup, setup_level)
         .add_systems(Update, (update_bird, update_obstacles))
         .run();
