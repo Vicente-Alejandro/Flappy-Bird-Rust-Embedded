@@ -6,17 +6,17 @@ The goal of this roadmap is not only to create a fun game but to build a **high-
 
 ---
 
-## 🏗️ v0.2.0 - Architecture & Engineering Foundations (Design Phase) - ONGOING
+## 🏗️ v0.2.0 & v0.2.1 - Architecture & Engineering Foundations (Design Phase) - COMPLETED
 **Goal:** Establish a scalable, predictable, and professional foundation. Before writing mechanics code, we prepare the architectural groundwork.
 
-*   **Architecture Decision Records (ADRs):** Implement ADRs to formally document why and how we choose certain patterns (e.g., how we will handle persistence or network/serial communication).
-*   **Domain-Driven Directory Structure:** Define a strict folder hierarchy that separates responsibilities (Core, Rendering, UI, Physics, Hardware).
-*   **Continuous Integration (CI/CD):** Configure GitHub Actions for:
-    *   Strict code verification (`cargo clippy`, `cargo fmt`).
-    *   Automated cross-compilation builds (Windows & Linux).
-*   **Deterministic Physics:** Theoretical design of a *Fixed Timestep* to guarantee that the game's physics behave identically regardless of the machine's framerate.
-*   **Data-Driven Configuration:** Design the system so that variables like Gravity, Flap Force, and Speed are loaded from external files (e.g., `.ron` or `.toml`), allowing game tuning without recompiling.
-*   **Telemetry and Logging:** Integrate the `tracing` crate to emit structured logs and profile system performance.
+*   ✅ **Architecture Decision Records (ADRs):** Implement ADRs to formally document why and how we choose certain patterns (e.g., how we will handle persistence or network/serial communication).
+*   ✅ **Domain-Driven Directory Structure:** Define a strict folder hierarchy that separates responsibilities (Core, Rendering, UI, Physics, Hardware).
+*   ✅ **Continuous Integration (CI/CD):** 
+    *   Configured GitHub Actions for manual triggers.
+    *   **(v0.2.1)** Built a custom Rust microservice (`cargo-qc`) with traceability logs for completely local, cost-free, automated quality control.
+*   ✅ **Deterministic Physics:** Implementation of a *Fixed Timestep* to guarantee that the game's physics behave identically regardless of the machine's framerate.
+*   ✅ **Data-Driven Configuration:** Designed the system so that variables like Gravity, Flap Force, and Speed are loaded from external files (`.ron`), allowing game tuning without recompiling.
+*   ✅ **Telemetry and Logging:** Integrated the `tracing` crate to emit structured logs and profile system performance.
 
 ---
 
