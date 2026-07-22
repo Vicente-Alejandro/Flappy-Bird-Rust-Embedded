@@ -1,0 +1,3 @@
+# Bevy heavily uses types with many parameters (Queries, Systems).
+# We increase the type complexity threshold so clippy doesn't warn us constantly.
+type-complexity-threshold = 250
