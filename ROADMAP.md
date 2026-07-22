@@ -71,6 +71,6 @@ The goal of this roadmap is not only to create a fun game but to build a **high-
 
 ---
 
-## 🔮 Future (v0.6.0+)
+## 🔮 Future (v?.?.0+)
 *   Asynchronous Multiplayer (Ghosts of other players).
 *   WebAssembly (Wasm) port to play directly from an online portfolio.
