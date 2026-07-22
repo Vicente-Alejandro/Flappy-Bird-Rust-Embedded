@@ -1,11 +1,11 @@
+use bevy::window::{MonitorSelection, WindowMode};
 use bevy::{prelude::*, window::PrimaryWindow};
-use bevy::window::{WindowMode, MonitorSelection};
-use rand::{rngs::ThreadRng, rng, Rng};
+use rand::{Rng, rng, rngs::ThreadRng};
 
 mod core;
 mod game;
-mod ui;
 mod hardware;
+mod ui;
 
 fn main() {
     App::new()
@@ -64,17 +64,14 @@ fn setup_level(
     let window = window_query.single().unwrap();
     commands.insert_resource(GameManager {
         pipe_image: pipe_image.clone(),
-        window_dimensions: Vec2::new(window.width(),window.height()),
+        window_dimensions: Vec2::new(window.width(), window.height()),
     });
     commands.insert_resource(ClearColor(Color::srgb(0.5, 0.7, 0.8)));
 
     commands.spawn(Camera2d::default());
 
     commands.spawn((
-        Sprite {
-            image: asset_server.load("bird.png"),
-            ..Default::default()
-        },
+        Sprite { image: asset_server.load("bird.png"), ..Default::default() },
         Transform::IDENTITY.with_scale(Vec3::splat(PIXEL_RATIO)),
         Bird { velocity: 0. },
     ));
@@ -141,10 +138,7 @@ fn spawn_obstacle(
     pipe_image: &Handle<Image>,
 ) {
     commands.spawn((
-        Sprite {
-            image: pipe_image.clone(),
-            ..Default::default()
-        },
+        Sprite { image: pipe_image.clone(), ..Default::default() },
         Transform::from_translation(translation).with_scale(Vec3::new(
             PIXEL_RATIO,
             PIXEL_RATIO * -pipe_direction,
