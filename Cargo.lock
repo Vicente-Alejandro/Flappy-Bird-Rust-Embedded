@@ -2459,6 +2459,10 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "rand 0.9.1",
+ "ron",
+ "serde",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
