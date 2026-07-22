@@ -1,0 +1,89 @@
+========================================
+DATE: 2026-07-22 17:35 | VERSION: 0.2.1
+========================================
+--- FMT ERROR ---
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\tools\cargo-qc\src\main.rs:32:
+     } else {
+         current_dir.clone()
+     };
+[31m-    
+[0m[32m+
+[0m     let history_file = log_dir.join(".qc_history.md");
+     let errors_file = log_dir.join(".qc_errors.log");
+ 
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\tools\cargo-qc\src\main.rs:40:
+     if !history_file.exists() {
+         if let Ok(mut file) = OpenOptions::new().create(true).write(true).open(&history_file) {
+             let _ = writeln!(file, "# Cargo QC History\n");
+[31m-            let _ = writeln!(
+[0m[31m-                file,
+[0m[31m-                "| Date | Version | Fmt | Clippy | Build | Overall |"
+[0m[31m-            );
+[0m[32m+            let _ = writeln!(file, "| Date | Version | Fmt | Clippy | Build | Overall |");
+[0m             let _ = writeln!(file, "|---|---|---|---|---|---|");
+         }
+     }
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\tools\cargo-qc\src\main.rs:59:
+         .arg("--check")
+         .output()
+         .expect("Failed to execute cargo fmt");
+[31m-    
+[0m[32m+
+[0m     let fmt_pass = fmt_output.status.success();
+     if fmt_pass {
+         println!("{}", "✅ Formatting passed!".green());
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\tools\cargo-qc\src\main.rs:74:
+ 
+     // 2. Clippy
+     println!("\n{}", "➔ Running cargo clippy...".yellow());
+[31m-    // Use inherited stdout/stderr so the user can see it in real-time, 
+[0m[32m+    // Use inherited stdout/stderr so the user can see it in real-time,
+[0m     // but to capture it we'd have to pipe. For clippy, seeing it in real time is better,
+     // but the user wanted to save the error log. So we capture it.
+     let clippy_output = Command::new("cargo")
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\tools\cargo-qc\src\main.rs:84:
+         .arg("warnings")
+         .output()
+         .expect("Failed to execute cargo clippy");
+[31m-    
+[0m[32m+
+[0m     let clippy_pass = clippy_output.status.success();
+     if clippy_pass {
+         println!("{}", "✅ Clippy passed!".green());
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\tools\cargo-qc\src\main.rs:101:
+ 
+     // 3. Build
+     println!("\n{}", "➔ Running cargo build...".yellow());
+[31m-    let build_output = Command::new("cargo")
+[0m[31m-        .arg("build")
+[0m[31m-        .output()
+[0m[31m-        .expect("Failed to execute cargo build");
+[0m[31m-    
+[0m[32m+    let build_output =
+[0m[32m+        Command::new("cargo").arg("build").output().expect("Failed to execute cargo build");
+[0m[32m+
+[0m     let build_pass = build_output.status.success();
+     if build_pass {
+         println!("{}", "✅ Build passed!".green());
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\tools\cargo-qc\src\main.rs:122:
+     // Write History
+     let date = Local::now().format("%Y-%m-%d %H:%M").to_string();
+     let icon = |pass: bool| if pass { "✅" } else { "❌" };
+[31m-    
+[0m[32m+
+[0m     if let Ok(mut file) = OpenOptions::new().append(true).open(&history_file) {
+         let _ = writeln!(
+             file,
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\tools\cargo-qc\src\main.rs:153:
+         std::process::exit(1);
+     }
+ 
+[31m-    println!(
+[0m[31m-        "\n{}",
+[0m[31m-        "🎉 All checks passed successfully! Traceability updated.".bold().green()
+[0m[31m-    );
+[0m[32m+    println!("\n{}", "🎉 All checks passed successfully! Traceability updated.".bold().green());
+[0m }
+ 
+
+
