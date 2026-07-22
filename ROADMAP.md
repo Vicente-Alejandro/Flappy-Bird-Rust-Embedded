@@ -6,7 +6,7 @@ The goal of this roadmap is not only to create a fun game but to build a **high-
 
 ---
 
-## 🏗️ v0.2.0 - Architecture & Engineering Foundations (Design Phase)
+## 🏗️ v0.2.0 - Architecture & Engineering Foundations (Design Phase) - ONGOING
 **Goal:** Establish a scalable, predictable, and professional foundation. Before writing mechanics code, we prepare the architectural groundwork.
 
 *   **Architecture Decision Records (ADRs):** Implement ADRs to formally document why and how we choose certain patterns (e.g., how we will handle persistence or network/serial communication).
