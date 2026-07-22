@@ -68,7 +68,7 @@ fn setup_level(
     });
     commands.insert_resource(ClearColor(Color::srgb(0.5, 0.7, 0.8)));
 
-    commands.spawn(Camera2d::default());
+    commands.spawn(Camera2d);
 
     commands.spawn((
         Sprite { image: asset_server.load("bird.png"), ..Default::default() },
@@ -104,7 +104,7 @@ fn update_obstacles(
     }
 }
 fn get_centered_pipe_position() -> f32 {
-    return (OBSTACLE_HEIGHT / 2. + OBSTACLE_GAP_SIZE) * PIXEL_RATIO;
+    (OBSTACLE_HEIGHT / 2. + OBSTACLE_GAP_SIZE) * PIXEL_RATIO
 }
 fn spawn_obstacles(
     commands: &mut Commands,
@@ -148,7 +148,7 @@ fn spawn_obstacle(
     ));
 }
 fn generate_offset(rand: &mut ThreadRng) -> f32 {
-    return rand.random_range(-OBSTACLE_VERTICAL_OFFSET..OBSTACLE_VERTICAL_OFFSET) * PIXEL_RATIO;
+    rand.random_range(-OBSTACLE_VERTICAL_OFFSET..OBSTACLE_VERTICAL_OFFSET) * PIXEL_RATIO
 }
 fn update_bird(
     mut commands: Commands,
