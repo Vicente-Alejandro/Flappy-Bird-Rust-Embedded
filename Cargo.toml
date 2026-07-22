@@ -1,3 +1,9 @@
+[workspace]
+members = [
+    ".",
+    "tools/cargo-qc"
+]
+
 [package]
 name = "flappy_bird"
 version = "0.1.0"
