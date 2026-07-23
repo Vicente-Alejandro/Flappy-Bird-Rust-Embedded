@@ -87,3 +87,960 @@ Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\tools\cargo-qc\src\main.rs:
  
 
 
+========================================
+DATE: 2026-07-22 18:21 | VERSION: 0.2.1
+========================================
+--- FMT ERROR ---
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\core\save.rs:20:
+ 
+ pub fn save_save_data(save_data: Res<SaveData>) {
+     if save_data.is_changed() {
+[31m-        if let Ok(data) = ron::ser::to_string_pretty(&*save_data, ron::ser::PrettyConfig::default()) {
+[0m[32m+        if let Ok(data) = ron::ser::to_string_pretty(&*save_data, ron::ser::PrettyConfig::default())
+[0m[32m+        {
+[0m             let _ = fs::write(SAVE_PATH, data);
+         }
+     }
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\collision.rs:1:
+[31m-use bevy::prelude::*;
+[0m use crate::core::config::GameConfig;
+ use crate::core::state::GameState;
+[32m+use crate::game::environment::EnvironmentData;
+[0m use crate::game::environment::Obstacle;
+ use crate::game::player::Bird;
+[31m-use crate::game::environment::EnvironmentData;
+[0m[32m+use bevy::prelude::*;
+[0m 
+ pub fn check_collisions(
+     bird_query: Query<&Transform, With<Bird>>,
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\collision.rs:14:
+ ) {
+     if let Ok(bird_transform) = bird_query.get_single() {
+         let mut dead = false;
+[31m-        
+[0m[32m+
+[0m         // Floor/Ceiling collision
+[31m-        if bird_transform.translation.y <= -env_data.window_dimensions.y / 2. 
+[0m[31m-            || bird_transform.translation.y >= env_data.window_dimensions.y / 2. {
+[0m[32m+        if bird_transform.translation.y <= -env_data.window_dimensions.y / 2.
+[0m[32m+            || bird_transform.translation.y >= env_data.window_dimensions.y / 2.
+[0m[32m+        {
+[0m             dead = true;
+         } else {
+             // Pipe collision
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\environment.rs:1:
+[31m-use bevy::prelude::*;
+[0m[31m-use rand::{rng, rngs::ThreadRng, Rng};
+[0m use crate::core::config::GameConfig;
+ use crate::core::state::GameState;
+[32m+use bevy::prelude::*;
+[0m[32m+use rand::{Rng, rng, rngs::ThreadRng};
+[0m 
+ #[derive(Component)]
+ pub struct Obstacle {
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\environment.rs:91:
+     config: &GameConfig,
+ ) {
+     commands.spawn((
+[31m-        Sprite {
+[0m[31m-            image: pipe_image.clone(),
+[0m[31m-            ..Default::default()
+[0m[31m-        },
+[0m[32m+        Sprite { image: pipe_image.clone(), ..Default::default() },
+[0m         Transform::from_translation(translation).with_scale(Vec3::new(
+             config.pixel_ratio,
+             config.pixel_ratio * -pipe_direction,
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\environment.rs:101:
+             config.pixel_ratio,
+         )),
+[31m-        Obstacle { 
+[0m[31m-            pipe_direction,
+[0m[31m-            scored: false,
+[0m[31m-        },
+[0m[32m+        Obstacle { pipe_direction, scored: false },
+[0m         crate::game::GameEntity,
+     ));
+ }
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\mod.rs:1:
+[32m+use crate::core::config::GameConfig;
+[0m[32m+use crate::core::state::GameState;
+[0m use bevy::prelude::*;
+ use bevy::window::PrimaryWindow;
+ use rand::rng;
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\mod.rs:4:
+[31m-use crate::core::state::GameState;
+[0m[31m-use crate::core::config::GameConfig;
+[0m 
+ pub mod collision;
+ pub mod environment;
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\mod.rs:43:
+     score.0 = 0; // Reset score
+ 
+     let pipe_image = asset_server.load("pipe.png");
+[31m-    let Ok(window) = window_query.get_single() else { return; };
+[0m[31m-    
+[0m[32m+    let Ok(window) = window_query.get_single() else {
+[0m[32m+        return;
+[0m[32m+    };
+[0m[32m+
+[0m     commands.insert_resource(environment::EnvironmentData {
+         pipe_image: pipe_image.clone(),
+         window_dimensions: Vec2::new(window.width(), window.height()),
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\mod.rs:51:
+     });
+ 
+     commands.spawn((
+[31m-        Sprite {
+[0m[31m-            image: asset_server.load("bird.png"),
+[0m[31m-            ..Default::default()
+[0m[31m-        },
+[0m[32m+        Sprite { image: asset_server.load("bird.png"), ..Default::default() },
+[0m         Transform::IDENTITY.with_scale(Vec3::splat(config.pixel_ratio)),
+         player::Bird { velocity: 0. },
+         GameEntity,
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\player.rs:1:
+[31m-use bevy::prelude::*;
+[0m use crate::core::config::GameConfig;
+[32m+use bevy::prelude::*;
+[0m 
+ #[derive(Component)]
+ pub struct Bird {
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\main.rs:1:
+[31m-use bevy::window::{MonitorSelection, WindowMode};
+[0m use bevy::prelude::*;
+[32m+use bevy::window::{MonitorSelection, WindowMode};
+[0m use std::fs;
+ 
+ mod core;
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\main.rs:13:
+ 
+     let config_str = fs::read_to_string("assets/config.ron")
+         .expect("Failed to read assets/config.ron. Does the file exist?");
+[31m-    let config: core::config::GameConfig = ron::from_str(&config_str)
+[0m[31m-        .expect("Failed to parse config.ron. Is the syntax correct?");
+[0m[32m+    let config: core::config::GameConfig =
+[0m[32m+        ron::from_str(&config_str).expect("Failed to parse config.ron. Is the syntax correct?");
+[0m 
+     App::new()
+         .insert_resource(config)
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\ui\mod.rs:1:
+[31m-use bevy::prelude::*;
+[0m[31m-use crate::core::state::GameState;
+[0m use crate::core::save::SaveData;
+[32m+use crate::core::state::GameState;
+[0m use crate::game::Score;
+[32m+use bevy::prelude::*;
+[0m 
+ pub struct UiPlugin;
+ 
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\ui\mod.rs:14:
+ impl Plugin for UiPlugin {
+     fn build(&self, app: &mut App) {
+         app.add_systems(OnEnter(GameState::MainMenu), setup_main_menu)
+[31m-           .add_systems(Update, menu_input.run_if(in_state(GameState::MainMenu)))
+[0m[31m-           .add_systems(OnExit(GameState::MainMenu), cleanup_menu)
+[0m[31m-           
+[0m[31m-           .add_systems(OnEnter(GameState::Playing), setup_hud)
+[0m[31m-           .add_systems(Update, update_hud.run_if(in_state(GameState::Playing)))
+[0m[31m-           .add_systems(OnExit(GameState::Playing), cleanup_hud)
+[0m[31m-           
+[0m[31m-           .add_systems(OnEnter(GameState::GameOver), setup_game_over)
+[0m[31m-           .add_systems(Update, game_over_input.run_if(in_state(GameState::GameOver)))
+[0m[31m-           .add_systems(OnExit(GameState::GameOver), cleanup_menu);
+[0m[32m+            .add_systems(Update, menu_input.run_if(in_state(GameState::MainMenu)))
+[0m[32m+            .add_systems(OnExit(GameState::MainMenu), cleanup_menu)
+[0m[32m+            .add_systems(OnEnter(GameState::Playing), setup_hud)
+[0m[32m+            .add_systems(Update, update_hud.run_if(in_state(GameState::Playing)))
+[0m[32m+            .add_systems(OnExit(GameState::Playing), cleanup_hud)
+[0m[32m+            .add_systems(OnEnter(GameState::GameOver), setup_game_over)
+[0m[32m+            .add_systems(Update, game_over_input.run_if(in_state(GameState::GameOver)))
+[0m[32m+            .add_systems(OnExit(GameState::GameOver), cleanup_menu);
+[0m     }
+ }
+ 
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\ui\mod.rs:30:
+ fn setup_main_menu(mut commands: Commands) {
+[31m-    commands.spawn((
+[0m[31m-        Node {
+[0m[31m-            width: Val::Percent(100.0),
+[0m[31m-            height: Val::Percent(100.0),
+[0m[31m-            justify_content: JustifyContent::Center,
+[0m[31m-            align_items: AlignItems::Center,
+[0m[31m-            flex_direction: FlexDirection::Column,
+[0m[31m-            ..default()
+[0m[31m-        },
+[0m[31m-        MenuUi,
+[0m[31m-    )).with_children(|parent| {
+[0m[31m-        parent.spawn((
+[0m[31m-            Text::new("FLAPPY BIRD"),
+[0m[31m-            TextFont {
+[0m[31m-                font_size: bevy::text::FontSize::Px(80.0),
+[0m[32m+    commands
+[0m[32m+        .spawn((
+[0m[32m+            Node {
+[0m[32m+                width: Val::Percent(100.0),
+[0m[32m+                height: Val::Percent(100.0),
+[0m[32m+                justify_content: JustifyContent::Center,
+[0m[32m+                align_items: AlignItems::Center,
+[0m[32m+                flex_direction: FlexDirection::Column,
+[0m                 ..default()
+             },
+[31m-            TextColor(Color::WHITE),
+[0m[31m-        ));
+[0m[31m-        parent.spawn((
+[0m[31m-            Text::new("Press SPACE to Start"),
+[0m[31m-            TextFont {
+[0m[31m-                font_size: bevy::text::FontSize::Px(40.0),
+[0m[31m-                ..default()
+[0m[31m-            },
+[0m[31m-            TextColor(Color::WHITE),
+[0m[31m-        ));
+[0m[31m-    });
+[0m[32m+            MenuUi,
+[0m[32m+        ))
+[0m[32m+        .with_children(|parent| {
+[0m[32m+            parent.spawn((
+[0m[32m+                Text::new("FLAPPY BIRD"),
+[0m[32m+                TextFont { font_size: bevy::text::FontSize::Px(80.0), ..default() },
+[0m[32m+                TextColor(Color::WHITE),
+[0m[32m+            ));
+[0m[32m+            parent.spawn((
+[0m[32m+                Text::new("Press SPACE to Start"),
+[0m[32m+                TextFont { font_size: bevy::text::FontSize::Px(40.0), ..default() },
+[0m[32m+                TextColor(Color::WHITE),
+[0m[32m+            ));
+[0m[32m+        });
+[0m }
+ 
+[31m-fn menu_input(
+[0m[31m-    keys: Res<ButtonInput<KeyCode>>,
+[0m[31m-    mut next_state: ResMut<NextState<GameState>>,
+[0m[31m-) {
+[0m[32m+fn menu_input(keys: Res<ButtonInput<KeyCode>>, mut next_state: ResMut<NextState<GameState>>) {
+[0m     if keys.just_pressed(KeyCode::Space) {
+         next_state.set(GameState::Playing);
+     }
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\ui\mod.rs:68:
+ }
+ 
+ fn setup_game_over(mut commands: Commands, save_data: Res<SaveData>) {
+[31m-    commands.spawn((
+[0m[31m-        Node {
+[0m[31m-            width: Val::Percent(100.0),
+[0m[31m-            height: Val::Percent(100.0),
+[0m[31m-            justify_content: JustifyContent::Center,
+[0m[31m-            align_items: AlignItems::Center,
+[0m[31m-            flex_direction: FlexDirection::Column,
+[0m[31m-            ..default()
+[0m[31m-        },
+[0m[31m-        MenuUi,
+[0m[31m-    )).with_children(|parent| {
+[0m[31m-        parent.spawn((
+[0m[31m-            Text::new("GAME OVER"),
+[0m[31m-            TextFont {
+[0m[31m-                font_size: bevy::text::FontSize::Px(80.0),
+[0m[32m+    commands
+[0m[32m+        .spawn((
+[0m[32m+            Node {
+[0m[32m+                width: Val::Percent(100.0),
+[0m[32m+                height: Val::Percent(100.0),
+[0m[32m+                justify_content: JustifyContent::Center,
+[0m[32m+                align_items: AlignItems::Center,
+[0m[32m+                flex_direction: FlexDirection::Column,
+[0m                 ..default()
+             },
+[31m-            TextColor(Color::srgb(1.0, 0.2, 0.2)),
+[0m[31m-        ));
+[0m[31m-        parent.spawn((
+[0m[31m-            Text::new(format!("High Score: {}", save_data.high_score)),
+[0m[31m-            TextFont {
+[0m[31m-                font_size: bevy::text::FontSize::Px(40.0),
+[0m[31m-                ..default()
+[0m[31m-            },
+[0m[31m-            TextColor(Color::WHITE),
+[0m[31m-        ));
+[0m[31m-        parent.spawn((
+[0m[31m-            Text::new("Press SPACE to Restart"),
+[0m[31m-            TextFont {
+[0m[31m-                font_size: bevy::text::FontSize::Px(30.0),
+[0m[31m-                ..default()
+[0m[31m-            },
+[0m[31m-            TextColor(Color::WHITE),
+[0m[31m-        ));
+[0m[31m-    });
+[0m[32m+            MenuUi,
+[0m[32m+        ))
+[0m[32m+        .with_children(|parent| {
+[0m[32m+            parent.spawn((
+[0m[32m+                Text::new("GAME OVER"),
+[0m[32m+                TextFont { font_size: bevy::text::FontSize::Px(80.0), ..default() },
+[0m[32m+                TextColor(Color::srgb(1.0, 0.2, 0.2)),
+[0m[32m+            ));
+[0m[32m+            parent.spawn((
+[0m[32m+                Text::new(format!("High Score: {}", save_data.high_score)),
+[0m[32m+                TextFont { font_size: bevy::text::FontSize::Px(40.0), ..default() },
+[0m[32m+                TextColor(Color::WHITE),
+[0m[32m+            ));
+[0m[32m+            parent.spawn((
+[0m[32m+                Text::new("Press SPACE to Restart"),
+[0m[32m+                TextFont { font_size: bevy::text::FontSize::Px(30.0), ..default() },
+[0m[32m+                TextColor(Color::WHITE),
+[0m[32m+            ));
+[0m[32m+        });
+[0m }
+ 
+[31m-fn game_over_input(
+[0m[31m-    keys: Res<ButtonInput<KeyCode>>,
+[0m[31m-    mut next_state: ResMut<NextState<GameState>>,
+[0m[31m-) {
+[0m[32m+fn game_over_input(keys: Res<ButtonInput<KeyCode>>, mut next_state: ResMut<NextState<GameState>>) {
+[0m     if keys.just_pressed(KeyCode::Space) {
+         next_state.set(GameState::Playing);
+     }
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\ui\mod.rs:122:
+ }
+ 
+ fn setup_hud(mut commands: Commands) {
+[31m-    commands.spawn((
+[0m[31m-        Node {
+[0m[31m-            position_type: PositionType::Absolute,
+[0m[31m-            top: Val::Px(20.0),
+[0m[31m-            left: Val::Percent(50.0),
+[0m[31m-            ..default()
+[0m[31m-        },
+[0m[31m-        ScoreText,
+[0m[31m-    )).with_children(|parent| {
+[0m[31m-        parent.spawn((
+[0m[31m-            Text::new("0"),
+[0m[31m-            TextFont {
+[0m[31m-                font_size: bevy::text::FontSize::Px(60.0),
+[0m[32m+    commands
+[0m[32m+        .spawn((
+[0m[32m+            Node {
+[0m[32m+                position_type: PositionType::Absolute,
+[0m[32m+                top: Val::Px(20.0),
+[0m[32m+                left: Val::Percent(50.0),
+[0m                 ..default()
+             },
+[31m-            TextColor(Color::WHITE),
+[0m[31m-        ));
+[0m[31m-    });
+[0m[32m+            ScoreText,
+[0m[32m+        ))
+[0m[32m+        .with_children(|parent| {
+[0m[32m+            parent.spawn((
+[0m[32m+                Text::new("0"),
+[0m[32m+                TextFont { font_size: bevy::text::FontSize::Px(60.0), ..default() },
+[0m[32m+                TextColor(Color::WHITE),
+[0m[32m+            ));
+[0m[32m+        });
+[0m }
+ 
+ fn update_hud(score: Res<Score>, mut query: Query<&mut Text, With<ScoreText>>) {
+
+--- CLIPPY ERROR ---
+    Checking flappy_bird v0.2.1 (D:\proyectos\RUST\flappy-bird-schematics)
+error[E0425]: cannot find type `Gamepads` in this scope
+   --> src\game\player.rs:13:19
+    |
+ 13 |     gamepads: Res<Gamepads>,
+    |                   ^^^^^^^^
+    |
+   ::: C:\Users\Alejandro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\bevy_input-0.19.0\src\gamepad.rs:375:1
+    |
+375 | pub struct Gamepad {
+    | ------------------ similarly named struct `Gamepad` defined here
+    |
+help: a struct with a similar name exists
+    |
+ 13 -     gamepads: Res<Gamepads>,
+ 13 +     gamepads: Res<Gamepad>,
+    |
+help: you might be missing a type parameter
+    |
+  9 | pub fn update_bird_movement<Gamepads>(
+    |                            ++++++++++
+
+error: unused import: `crate::core::state::GameState`
+ --> src\game\environment.rs:4:5
+  |
+4 | use crate::core::state::GameState;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `-D unused-imports` implied by `-D warnings`
+  = help: to override `-D warnings` add `#[allow(unused_imports)]`
+
+error[E0599]: no method named `get_single` found for struct `bevy::bevy_ecs::system::Query<'world, 'state, D, F>` in the current scope
+  --> src\game\collision.rs:15:44
+   |
+15 |     if let Ok(bird_transform) = bird_query.get_single() {
+   |                                            ^^^^^^^^^^
+   |
+   = note: the full name for the type has been written to 'D:\proyectos\RUST\flappy-bird-schematics\target\debug\deps\flappy_bird-c3061cbee0ce7462.long-type-8980601389763003510.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+help: there is a method `single` with a similar name
+   |
+15 -     if let Ok(bird_transform) = bird_query.get_single() {
+15 +     if let Ok(bird_transform) = bird_query.single() {
+   |
+
+error[E0599]: no method named `get_single_mut` found for struct `bevy::bevy_ecs::system::Query<'world, 'state, D, F>` in the current scope
+  --> src\game\player.rs:17:55
+   |
+17 |     if let Ok((mut bird, mut transform)) = bird_query.get_single_mut() {
+   |                                                       ^^^^^^^^^^^^^^
+   |
+   = note: the full name for the type has been written to 'D:\proyectos\RUST\flappy-bird-schematics\target\debug\deps\flappy_bird-c3061cbee0ce7462.long-type-5094563361315066457.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+help: there is a method `single_mut` with a similar name
+   |
+17 -     if let Ok((mut bird, mut transform)) = bird_query.get_single_mut() {
+17 +     if let Ok((mut bird, mut transform)) = bird_query.single_mut() {
+   |
+
+error[E0599]: no variant, associated function, or constant named `new` found for enum `bevy::bevy_input::gamepad::GamepadButton` in the current scope
+   --> src\game\player.rs:21:58
+    |
+ 21 |             if button_inputs.just_pressed(GamepadButton::new(gamepad, GamepadButtonType::South)) {
+    |                                                          ^^^ variant, associated function, or constant not found in `bevy::bevy_input::gamepad::GamepadButton`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> C:\Users\Alejandro\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib/rustlib/src/rust\library\core\src\cmp.rs:263:5
+    |
+263 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0433]: cannot find type `GamepadButtonType` in this scope
+  --> src\game\player.rs:21:71
+   |
+21 |             if button_inputs.just_pressed(GamepadButton::new(gamepad, GamepadButtonType::South)) {
+   |                                                                       ^^^^^^^^^^^^^^^^^ use of undeclared type `GamepadButtonType`
+   |
+help: an enum with a similar name exists
+   |
+21 -             if button_inputs.just_pressed(GamepadButton::new(gamepad, GamepadButtonType::South)) {
+21 +             if button_inputs.just_pressed(GamepadButton::new(gamepad, GamepadButton::South)) {
+   |
+
+error[E0599]: no method named `get_single` found for struct `bevy::bevy_ecs::system::Query<'world, 'state, D, F>` in the current scope
+  --> src\game\mod.rs:46:35
+   |
+46 |     let Ok(window) = window_query.get_single() else { return; };
+   |                                   ^^^^^^^^^^
+   |
+   = note: the full name for the type has been written to 'D:\proyectos\RUST\flappy-bird-schematics\target\debug\deps\flappy_bird-c3061cbee0ce7462.long-type-15378745607677522553.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+help: there is a method `single` with a similar name
+   |
+46 -     let Ok(window) = window_query.get_single() else { return; };
+46 +     let Ok(window) = window_query.single() else { return; };
+   |
+
+Some errors have detailed explanations: E0425, E0433, E0599.
+For more information about an error, try `rustc --explain E0425`.
+error: could not compile `flappy_bird` (bin "flappy_bird") due to 7 previous errors
+
+--- BUILD ERROR ---
+   Compiling flappy_bird v0.2.1 (D:\proyectos\RUST\flappy-bird-schematics)
+error[E0425]: cannot find type `Gamepads` in this scope
+   --> src\game\player.rs:13:19
+    |
+ 13 |     gamepads: Res<Gamepads>,
+    |                   ^^^^^^^^
+    |
+   ::: C:\Users\Alejandro\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\bevy_input-0.19.0\src\gamepad.rs:375:1
+    |
+375 | pub struct Gamepad {
+    | ------------------ similarly named struct `Gamepad` defined here
+    |
+help: a struct with a similar name exists
+    |
+ 13 -     gamepads: Res<Gamepads>,
+ 13 +     gamepads: Res<Gamepad>,
+    |
+help: you might be missing a type parameter
+    |
+  9 | pub fn update_bird_movement<Gamepads>(
+    |                            ++++++++++
+
+warning: unused import: `crate::core::state::GameState`
+ --> src\game\environment.rs:4:5
+  |
+4 | use crate::core::state::GameState;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0599]: no method named `get_single` found for struct `bevy::bevy_ecs::system::Query<'world, 'state, D, F>` in the current scope
+  --> src\game\collision.rs:15:44
+   |
+15 |     if let Ok(bird_transform) = bird_query.get_single() {
+   |                                            ^^^^^^^^^^
+   |
+   = note: the full name for the type has been written to 'D:\proyectos\RUST\flappy-bird-schematics\target\debug\deps\flappy_bird.long-type-6401605519925790912.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+help: there is a method `single` with a similar name
+   |
+15 -     if let Ok(bird_transform) = bird_query.get_single() {
+15 +     if let Ok(bird_transform) = bird_query.single() {
+   |
+
+error[E0599]: no method named `get_single_mut` found for struct `bevy::bevy_ecs::system::Query<'world, 'state, D, F>` in the current scope
+  --> src\game\player.rs:17:55
+   |
+17 |     if let Ok((mut bird, mut transform)) = bird_query.get_single_mut() {
+   |                                                       ^^^^^^^^^^^^^^
+   |
+   = note: the full name for the type has been written to 'D:\proyectos\RUST\flappy-bird-schematics\target\debug\deps\flappy_bird.long-type-4016149652693992934.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+help: there is a method `single_mut` with a similar name
+   |
+17 -     if let Ok((mut bird, mut transform)) = bird_query.get_single_mut() {
+17 +     if let Ok((mut bird, mut transform)) = bird_query.single_mut() {
+   |
+
+error[E0599]: no variant, associated function, or constant named `new` found for enum `bevy::bevy_input::gamepad::GamepadButton` in the current scope
+   --> src\game\player.rs:21:58
+    |
+ 21 |             if button_inputs.just_pressed(GamepadButton::new(gamepad, GamepadButtonType::South)) {
+    |                                                          ^^^ variant, associated function, or constant not found in `bevy::bevy_input::gamepad::GamepadButton`
+    |
+help: there is a method `ne` with a similar name, but with different arguments
+   --> C:\Users\Alejandro\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib/rustlib/src/rust\library\core\src\cmp.rs:263:5
+    |
+263 |     fn ne(&self, other: &Rhs) -> bool {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0433]: cannot find type `GamepadButtonType` in this scope
+  --> src\game\player.rs:21:71
+   |
+21 |             if button_inputs.just_pressed(GamepadButton::new(gamepad, GamepadButtonType::South)) {
+   |                                                                       ^^^^^^^^^^^^^^^^^ use of undeclared type `GamepadButtonType`
+   |
+help: an enum with a similar name exists
+   |
+21 -             if button_inputs.just_pressed(GamepadButton::new(gamepad, GamepadButtonType::South)) {
+21 +             if button_inputs.just_pressed(GamepadButton::new(gamepad, GamepadButton::South)) {
+   |
+
+error[E0599]: no method named `get_single` found for struct `bevy::bevy_ecs::system::Query<'world, 'state, D, F>` in the current scope
+  --> src\game\mod.rs:46:35
+   |
+46 |     let Ok(window) = window_query.get_single() else { return; };
+   |                                   ^^^^^^^^^^
+   |
+   = note: the full name for the type has been written to 'D:\proyectos\RUST\flappy-bird-schematics\target\debug\deps\flappy_bird.long-type-16911543586915859578.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+help: there is a method `single` with a similar name
+   |
+46 -     let Ok(window) = window_query.get_single() else { return; };
+46 +     let Ok(window) = window_query.single() else { return; };
+   |
+
+Some errors have detailed explanations: E0425, E0433, E0599.
+For more information about an error, try `rustc --explain E0425`.
+warning: `flappy_bird` (bin "flappy_bird") generated 1 warning
+error: could not compile `flappy_bird` (bin "flappy_bird") due to 6 previous errors; 1 warning emitted
+
+
+========================================
+DATE: 2026-07-22 18:23 | VERSION: 0.2.1
+========================================
+--- FMT ERROR ---
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\core\save.rs:20:
+ 
+ pub fn save_save_data(save_data: Res<SaveData>) {
+     if save_data.is_changed() {
+[31m-        let Ok(data) = ron::ser::to_string_pretty(&*save_data, ron::ser::PrettyConfig::default()) else { return; };
+[0m[32m+        let Ok(data) = ron::ser::to_string_pretty(&*save_data, ron::ser::PrettyConfig::default())
+[0m[32m+        else {
+[0m[32m+            return;
+[0m[32m+        };
+[0m         let _ = fs::write(SAVE_PATH, data);
+     }
+ }
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\collision.rs:1:
+[31m-use bevy::prelude::*;
+[0m use crate::core::config::GameConfig;
+ use crate::core::state::GameState;
+[32m+use crate::game::environment::EnvironmentData;
+[0m use crate::game::environment::Obstacle;
+ use crate::game::player::Bird;
+[31m-use crate::game::environment::EnvironmentData;
+[0m[32m+use bevy::prelude::*;
+[0m 
+ pub fn check_collisions(
+     bird_query: Query<&Transform, With<Bird>>,
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\collision.rs:14:
+ ) {
+     if let Ok(bird_transform) = bird_query.single() {
+         let mut dead = false;
+[31m-        
+[0m[32m+
+[0m         // Floor/Ceiling collision
+[31m-        if bird_transform.translation.y <= -env_data.window_dimensions.y / 2. 
+[0m[31m-            || bird_transform.translation.y >= env_data.window_dimensions.y / 2. {
+[0m[32m+        if bird_transform.translation.y <= -env_data.window_dimensions.y / 2.
+[0m[32m+            || bird_transform.translation.y >= env_data.window_dimensions.y / 2.
+[0m[32m+        {
+[0m             dead = true;
+         } else {
+             // Pipe collision
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\environment.rs:1:
+[31m-use bevy::prelude::*;
+[0m[31m-use rand::{rng, rngs::ThreadRng, Rng};
+[0m use crate::core::config::GameConfig;
+ use crate::core::config::GameConfig;
+[32m+use bevy::prelude::*;
+[0m[32m+use rand::{Rng, rng, rngs::ThreadRng};
+[0m 
+ #[derive(Component)]
+ pub struct Obstacle {
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\environment.rs:90:
+     config: &GameConfig,
+ ) {
+     commands.spawn((
+[31m-        Sprite {
+[0m[31m-            image: pipe_image.clone(),
+[0m[31m-            ..Default::default()
+[0m[31m-        },
+[0m[32m+        Sprite { image: pipe_image.clone(), ..Default::default() },
+[0m         Transform::from_translation(translation).with_scale(Vec3::new(
+             config.pixel_ratio,
+             config.pixel_ratio * -pipe_direction,
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\environment.rs:100:
+             config.pixel_ratio,
+         )),
+[31m-        Obstacle { 
+[0m[31m-            pipe_direction,
+[0m[31m-            scored: false,
+[0m[31m-        },
+[0m[32m+        Obstacle { pipe_direction, scored: false },
+[0m         crate::game::GameEntity,
+     ));
+ }
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\mod.rs:1:
+[32m+use crate::core::config::GameConfig;
+[0m[32m+use crate::core::state::GameState;
+[0m use bevy::prelude::*;
+ use bevy::window::PrimaryWindow;
+ use rand::rng;
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\mod.rs:4:
+[31m-use crate::core::state::GameState;
+[0m[31m-use crate::core::config::GameConfig;
+[0m 
+ pub mod collision;
+ pub mod environment;
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\mod.rs:43:
+     score.0 = 0; // Reset score
+ 
+     let pipe_image = asset_server.load("pipe.png");
+[31m-    let Ok(window) = window_query.single() else { return; };
+[0m[31m-    
+[0m[32m+    let Ok(window) = window_query.single() else {
+[0m[32m+        return;
+[0m[32m+    };
+[0m[32m+
+[0m     commands.insert_resource(environment::EnvironmentData {
+         window_dimensions: Vec2::new(window.width(), window.height()),
+     });
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\mod.rs:51:
+ 
+     commands.spawn((
+[31m-        Sprite {
+[0m[31m-            image: asset_server.load("bird.png"),
+[0m[31m-            ..Default::default()
+[0m[31m-        },
+[0m[32m+        Sprite { image: asset_server.load("bird.png"), ..Default::default() },
+[0m         Transform::IDENTITY.with_scale(Vec3::splat(config.pixel_ratio)),
+         player::Bird { velocity: 0. },
+         GameEntity,
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\game\player.rs:1:
+[31m-use bevy::prelude::*;
+[0m use crate::core::config::GameConfig;
+[32m+use bevy::prelude::*;
+[0m 
+ #[derive(Component)]
+ pub struct Bird {
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\main.rs:1:
+[31m-use bevy::window::{MonitorSelection, WindowMode};
+[0m use bevy::prelude::*;
+[32m+use bevy::window::{MonitorSelection, WindowMode};
+[0m use std::fs;
+ 
+ mod core;
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\main.rs:13:
+ 
+     let config_str = fs::read_to_string("assets/config.ron")
+         .expect("Failed to read assets/config.ron. Does the file exist?");
+[31m-    let config: core::config::GameConfig = ron::from_str(&config_str)
+[0m[31m-        .expect("Failed to parse config.ron. Is the syntax correct?");
+[0m[32m+    let config: core::config::GameConfig =
+[0m[32m+        ron::from_str(&config_str).expect("Failed to parse config.ron. Is the syntax correct?");
+[0m 
+     App::new()
+         .insert_resource(config)
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\ui\mod.rs:1:
+[31m-use bevy::prelude::*;
+[0m[31m-use crate::core::state::GameState;
+[0m use crate::core::save::SaveData;
+[32m+use crate::core::state::GameState;
+[0m use crate::game::Score;
+[32m+use bevy::prelude::*;
+[0m 
+ pub struct UiPlugin;
+ 
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\ui\mod.rs:14:
+ impl Plugin for UiPlugin {
+     fn build(&self, app: &mut App) {
+         app.add_systems(OnEnter(GameState::MainMenu), setup_main_menu)
+[31m-           .add_systems(Update, menu_input.run_if(in_state(GameState::MainMenu)))
+[0m[31m-           .add_systems(OnExit(GameState::MainMenu), cleanup_menu)
+[0m[31m-           
+[0m[31m-           .add_systems(OnEnter(GameState::Playing), setup_hud)
+[0m[31m-           .add_systems(Update, update_hud.run_if(in_state(GameState::Playing)))
+[0m[31m-           .add_systems(OnExit(GameState::Playing), cleanup_hud)
+[0m[31m-           
+[0m[31m-           .add_systems(OnEnter(GameState::GameOver), setup_game_over)
+[0m[31m-           .add_systems(Update, game_over_input.run_if(in_state(GameState::GameOver)))
+[0m[31m-           .add_systems(OnExit(GameState::GameOver), cleanup_menu);
+[0m[32m+            .add_systems(Update, menu_input.run_if(in_state(GameState::MainMenu)))
+[0m[32m+            .add_systems(OnExit(GameState::MainMenu), cleanup_menu)
+[0m[32m+            .add_systems(OnEnter(GameState::Playing), setup_hud)
+[0m[32m+            .add_systems(Update, update_hud.run_if(in_state(GameState::Playing)))
+[0m[32m+            .add_systems(OnExit(GameState::Playing), cleanup_hud)
+[0m[32m+            .add_systems(OnEnter(GameState::GameOver), setup_game_over)
+[0m[32m+            .add_systems(Update, game_over_input.run_if(in_state(GameState::GameOver)))
+[0m[32m+            .add_systems(OnExit(GameState::GameOver), cleanup_menu);
+[0m     }
+ }
+ 
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\ui\mod.rs:30:
+ fn setup_main_menu(mut commands: Commands) {
+[31m-    commands.spawn((
+[0m[31m-        Node {
+[0m[31m-            width: Val::Percent(100.0),
+[0m[31m-            height: Val::Percent(100.0),
+[0m[31m-            justify_content: JustifyContent::Center,
+[0m[31m-            align_items: AlignItems::Center,
+[0m[31m-            flex_direction: FlexDirection::Column,
+[0m[31m-            ..default()
+[0m[31m-        },
+[0m[31m-        MenuUi,
+[0m[31m-    )).with_children(|parent| {
+[0m[31m-        parent.spawn((
+[0m[31m-            Text::new("FLAPPY BIRD"),
+[0m[31m-            TextFont {
+[0m[31m-                font_size: bevy::text::FontSize::Px(80.0),
+[0m[32m+    commands
+[0m[32m+        .spawn((
+[0m[32m+            Node {
+[0m[32m+                width: Val::Percent(100.0),
+[0m[32m+                height: Val::Percent(100.0),
+[0m[32m+                justify_content: JustifyContent::Center,
+[0m[32m+                align_items: AlignItems::Center,
+[0m[32m+                flex_direction: FlexDirection::Column,
+[0m                 ..default()
+             },
+[31m-            TextColor(Color::WHITE),
+[0m[31m-        ));
+[0m[31m-        parent.spawn((
+[0m[31m-            Text::new("Press SPACE to Start"),
+[0m[31m-            TextFont {
+[0m[31m-                font_size: bevy::text::FontSize::Px(40.0),
+[0m[31m-                ..default()
+[0m[31m-            },
+[0m[31m-            TextColor(Color::WHITE),
+[0m[31m-        ));
+[0m[31m-    });
+[0m[32m+            MenuUi,
+[0m[32m+        ))
+[0m[32m+        .with_children(|parent| {
+[0m[32m+            parent.spawn((
+[0m[32m+                Text::new("FLAPPY BIRD"),
+[0m[32m+                TextFont { font_size: bevy::text::FontSize::Px(80.0), ..default() },
+[0m[32m+                TextColor(Color::WHITE),
+[0m[32m+            ));
+[0m[32m+            parent.spawn((
+[0m[32m+                Text::new("Press SPACE to Start"),
+[0m[32m+                TextFont { font_size: bevy::text::FontSize::Px(40.0), ..default() },
+[0m[32m+                TextColor(Color::WHITE),
+[0m[32m+            ));
+[0m[32m+        });
+[0m }
+ 
+[31m-fn menu_input(
+[0m[31m-    keys: Res<ButtonInput<KeyCode>>,
+[0m[31m-    mut next_state: ResMut<NextState<GameState>>,
+[0m[31m-) {
+[0m[32m+fn menu_input(keys: Res<ButtonInput<KeyCode>>, mut next_state: ResMut<NextState<GameState>>) {
+[0m     if keys.just_pressed(KeyCode::Space) {
+         next_state.set(GameState::Playing);
+     }
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\ui\mod.rs:68:
+ }
+ 
+ fn setup_game_over(mut commands: Commands, save_data: Res<SaveData>) {
+[31m-    commands.spawn((
+[0m[31m-        Node {
+[0m[31m-            width: Val::Percent(100.0),
+[0m[31m-            height: Val::Percent(100.0),
+[0m[31m-            justify_content: JustifyContent::Center,
+[0m[31m-            align_items: AlignItems::Center,
+[0m[31m-            flex_direction: FlexDirection::Column,
+[0m[31m-            ..default()
+[0m[31m-        },
+[0m[31m-        MenuUi,
+[0m[31m-    )).with_children(|parent| {
+[0m[31m-        parent.spawn((
+[0m[31m-            Text::new("GAME OVER"),
+[0m[31m-            TextFont {
+[0m[31m-                font_size: bevy::text::FontSize::Px(80.0),
+[0m[32m+    commands
+[0m[32m+        .spawn((
+[0m[32m+            Node {
+[0m[32m+                width: Val::Percent(100.0),
+[0m[32m+                height: Val::Percent(100.0),
+[0m[32m+                justify_content: JustifyContent::Center,
+[0m[32m+                align_items: AlignItems::Center,
+[0m[32m+                flex_direction: FlexDirection::Column,
+[0m                 ..default()
+             },
+[31m-            TextColor(Color::srgb(1.0, 0.2, 0.2)),
+[0m[31m-        ));
+[0m[31m-        parent.spawn((
+[0m[31m-            Text::new(format!("High Score: {}", save_data.high_score)),
+[0m[31m-            TextFont {
+[0m[31m-                font_size: bevy::text::FontSize::Px(40.0),
+[0m[31m-                ..default()
+[0m[31m-            },
+[0m[31m-            TextColor(Color::WHITE),
+[0m[31m-        ));
+[0m[31m-        parent.spawn((
+[0m[31m-            Text::new("Press SPACE to Restart"),
+[0m[31m-            TextFont {
+[0m[31m-                font_size: bevy::text::FontSize::Px(30.0),
+[0m[31m-                ..default()
+[0m[31m-            },
+[0m[31m-            TextColor(Color::WHITE),
+[0m[31m-        ));
+[0m[31m-    });
+[0m[32m+            MenuUi,
+[0m[32m+        ))
+[0m[32m+        .with_children(|parent| {
+[0m[32m+            parent.spawn((
+[0m[32m+                Text::new("GAME OVER"),
+[0m[32m+                TextFont { font_size: bevy::text::FontSize::Px(80.0), ..default() },
+[0m[32m+                TextColor(Color::srgb(1.0, 0.2, 0.2)),
+[0m[32m+            ));
+[0m[32m+            parent.spawn((
+[0m[32m+                Text::new(format!("High Score: {}", save_data.high_score)),
+[0m[32m+                TextFont { font_size: bevy::text::FontSize::Px(40.0), ..default() },
+[0m[32m+                TextColor(Color::WHITE),
+[0m[32m+            ));
+[0m[32m+            parent.spawn((
+[0m[32m+                Text::new("Press SPACE to Restart"),
+[0m[32m+                TextFont { font_size: bevy::text::FontSize::Px(30.0), ..default() },
+[0m[32m+                TextColor(Color::WHITE),
+[0m[32m+            ));
+[0m[32m+        });
+[0m }
+ 
+[31m-fn game_over_input(
+[0m[31m-    keys: Res<ButtonInput<KeyCode>>,
+[0m[31m-    mut next_state: ResMut<NextState<GameState>>,
+[0m[31m-) {
+[0m[32m+fn game_over_input(keys: Res<ButtonInput<KeyCode>>, mut next_state: ResMut<NextState<GameState>>) {
+[0m     if keys.just_pressed(KeyCode::Space) {
+         next_state.set(GameState::Playing);
+     }
+Diff in \\?\D:\proyectos\RUST\flappy-bird-schematics\src\ui\mod.rs:122:
+ }
+ 
+ fn setup_hud(mut commands: Commands) {
+[31m-    commands.spawn((
+[0m[31m-        Node {
+[0m[31m-            position_type: PositionType::Absolute,
+[0m[31m-            top: Val::Px(20.0),
+[0m[31m-            left: Val::Percent(50.0),
+[0m[31m-            ..default()
+[0m[31m-        },
+[0m[31m-        ScoreText,
+[0m[31m-    )).with_children(|parent| {
+[0m[31m-        parent.spawn((
+[0m[31m-            Text::new("0"),
+[0m[31m-            TextFont {
+[0m[31m-                font_size: bevy::text::FontSize::Px(60.0),
+[0m[32m+    commands
+[0m[32m+        .spawn((
+[0m[32m+            Node {
+[0m[32m+                position_type: PositionType::Absolute,
+[0m[32m+                top: Val::Px(20.0),
+[0m[32m+                left: Val::Percent(50.0),
+[0m                 ..default()
+             },
+[31m-            TextColor(Color::WHITE),
+[0m[31m-        ));
+[0m[31m-    });
+[0m[32m+            ScoreText,
+[0m[32m+        ))
+[0m[32m+        .with_children(|parent| {
+[0m[32m+            parent.spawn((
+[0m[32m+                Text::new("0"),
+[0m[32m+                TextFont { font_size: bevy::text::FontSize::Px(60.0), ..default() },
+[0m[32m+                TextColor(Color::WHITE),
+[0m[32m+            ));
+[0m[32m+        });
+[0m }
+ 
+ fn update_hud(score: Res<Score>, mut query: Query<&mut Text, With<ScoreText>>) {
+
+--- CLIPPY ERROR ---
+    Checking flappy_bird v0.2.1 (D:\proyectos\RUST\flappy-bird-schematics)
+error[E0252]: the name `GameConfig` is defined multiple times
+ --> src\game\environment.rs:4:5
+  |
+3 | use crate::core::config::GameConfig;
+  |     ------------------------------- previous import of the type `GameConfig` here
+4 | use crate::core::config::GameConfig;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `GameConfig` reimported here
+  |
+  = note: `GameConfig` must be defined only once in the type namespace of this module
+
+error: unused import: `crate::core::config::GameConfig`
+ --> src\game\environment.rs:4:5
+  |
+4 | use crate::core::config::GameConfig;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `-D unused-imports` implied by `-D warnings`
+  = help: to override `-D warnings` add `#[allow(unused_imports)]`
+
+For more information about this error, try `rustc --explain E0252`.
+error: could not compile `flappy_bird` (bin "flappy_bird") due to 2 previous errors
+
+--- BUILD ERROR ---
+   Compiling flappy_bird v0.2.1 (D:\proyectos\RUST\flappy-bird-schematics)
+error[E0252]: the name `GameConfig` is defined multiple times
+ --> src\game\environment.rs:4:5
+  |
+3 | use crate::core::config::GameConfig;
+  |     ------------------------------- previous import of the type `GameConfig` here
+4 | use crate::core::config::GameConfig;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `GameConfig` reimported here
+  |
+  = note: `GameConfig` must be defined only once in the type namespace of this module
+
+warning: unused import: `crate::core::config::GameConfig`
+ --> src\game\environment.rs:4:5
+  |
+4 | use crate::core::config::GameConfig;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+For more information about this error, try `rustc --explain E0252`.
+warning: `flappy_bird` (bin "flappy_bird") generated 1 warning
+error: could not compile `flappy_bird` (bin "flappy_bird") due to 1 previous error; 1 warning emitted
+
+

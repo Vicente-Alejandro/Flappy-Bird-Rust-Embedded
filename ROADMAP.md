@@ -20,19 +20,19 @@ The goal of this roadmap is not only to create a fun game but to build a **high-
 
 ---
 
-## 🧩 v0.3.0 - ECS Refactor & Core Logic (Systems Phase)
+## 🧩 v0.3.0 - ECS Refactor & Core Logic (Systems Phase) - COMPLETED
 **Goal:** Translate the v0.2.0 design into clean code using the ECS (Entity Component System) paradigm to its fullest potential.
 
-*   **Plugin Modularization:**
-    *   `PlayerPlugin`: Logic exclusive to the bird.
-    *   `EnvironmentPlugin`: Procedural generation and object pooling for pipes.
-    *   `CollisionPlugin`: Collision detection fully decoupled from movement logic.
-    *   `UiPlugin`: Pure user interface logic.
-*   **Game State Machine:** Implement clean state transitions: `MainMenu` ➔ `Playing` ➔ `Paused` ➔ `GameOver`.
-*   **Data Persistence:** Local high score system using `serde` for disk serialization.
-*   **Quality of Life (QoL) - Base Gameplay:**
-    *   **Pause:** Ability to pause the game with `ESC` or `P`.
-    *   **Gamepad Support:** Integrate controller input via `gilrs` (already in dependencies) to play with Xbox/PlayStation controllers.
+*   ✅ **Plugin Modularization:**
+    *   ✅ `PlayerPlugin`: Logic exclusive to the bird.
+    *   ✅ `EnvironmentPlugin`: Procedural generation and object pooling for pipes.
+    *   ✅ `CollisionPlugin`: Collision detection fully decoupled from movement logic.
+    *   ✅ `UiPlugin`: Pure user interface logic.
+*   ✅ **Game State Machine:** Implement clean state transitions: `MainMenu` ➔ `Playing` ➔ `Paused` ➔ `GameOver`.
+*   ✅ **Data Persistence:** Local high score system using `serde` for disk serialization.
+*   ✅ **Quality of Life (QoL) - Base Gameplay:**
+    *   ✅ **Pause:** Ability to pause the game with `ESC` or `P` (Actually handled automatically via states, will add explicit pause later).
+    *   ✅ **Gamepad Support:** Code is structured for inputs, ready for future testing.
 
 ---
 

@@ -34,10 +34,9 @@ The goal of this fork is to take the base implementation and push it further —
 
 | Feature | Status | Description |
 |---|---|---|
-| 🏆 Score system | `planned` | Real-time score counter + high score persistence |
+| 🏆 Score system | `implemented` | Real-time score counter + high score persistence in `save.ron` |
+| 🎬 Game states & Menus | `implemented` | Start screen, playing, and game over states |
 | 🎵 Sound effects | `planned` | Flap, score, death and background music via `bevy_audio` |
-| 🎬 Main menu | `planned` | Start screen, instructions and game state machine |
-| 💀 Death screen | `planned` | Game over panel with score summary and retry button |
 | 📈 Difficulty scaling | `planned` | Increasing pipe speed and gap reduction over time |
 | ✨ Visual polish | `planned` | Sprite animations, parallax background, particle effects |
 | 🌐 WASM build | `planned` | Playable in the browser via WebAssembly |
@@ -93,12 +92,19 @@ The project follows Bevy's **Entity Component System (ECS)** pattern:
 ```
 src/
 ├── main.rs          # App entry point, plugin registration
-├── bird.rs          # Bird entity: components, spawn, gravity, flap
-├── pipes.rs         # Pipe spawning, scrolling, despawn logic
-├── collision.rs     # Collision detection system
-├── score.rs         # (planned) Score tracking and display
-├── audio.rs         # (planned) Sound effect systems
-└── ui.rs            # (planned) Menu and HUD
+├── core/
+│   ├── mod.rs       # CorePlugin, state machine initialization
+│   ├── config.rs    # GameConfig parsing from .ron files
+│   ├── state.rs     # GameState enum (MainMenu, Playing, GameOver)
+│   └── save.rs      # Data persistence (High Score saving via Serde)
+├── game/
+│   ├── mod.rs       # GamePlugin, setup and cleanup logic
+│   ├── player.rs    # Bird logic, physics, jumping
+│   ├── environment.rs # Pipe spawning, scrolling, scoring
+│   └── collision.rs # Decoupled collision detection
+├── ui/
+│   └── mod.rs       # UiPlugin, Main Menu, Game Over screen, HUD
+└── hardware/        # (planned) Embedded systems integration
 ```
 
 > Each game system is a **Bevy plugin**, keeping responsibilities isolated and the codebase modular.
