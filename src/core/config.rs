@@ -4,6 +4,8 @@ use serde::Deserialize;
 #[derive(Resource, Deserialize, Debug, Clone)]
 pub struct GameConfig {
     pub pixel_ratio: f32,
+    #[serde(default = "default_bird_scale")]
+    pub bird_scale: f32,
     pub flap_force: f32,
     pub gravity: f32,
     pub velocity_to_rotation_ratio: f32,
@@ -14,4 +16,8 @@ pub struct GameConfig {
     pub obstacle_gap_size: f32,
     pub obstacle_spacing: f32,
     pub obstacle_scroll_speed: f32,
+}
+
+fn default_bird_scale() -> f32 {
+    1.0
 }

@@ -83,10 +83,10 @@ fn setup_game(
 
     commands.spawn((
         Sprite { image: frame0, ..Default::default() },
-        Transform::IDENTITY.with_scale(Vec3::splat(config.pixel_ratio)),
+        Transform::IDENTITY.with_scale(Vec3::splat(config.bird_scale * config.pixel_ratio)),
         player::Bird { velocity: 0., jump_intent: false },
         player::ProceduralAnimation {
-            scale_target: Vec2::splat(config.pixel_ratio),
+            scale_target: Vec2::splat(config.bird_scale * config.pixel_ratio),
             flap_timer: Timer::from_seconds(0.1, TimerMode::Repeating),
             frames,
             current_frame: 0,

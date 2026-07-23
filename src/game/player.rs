@@ -24,7 +24,8 @@ pub fn handle_jump_input(
         if keys.just_pressed(KeyCode::Space) {
             bird.jump_intent = true;
             // Stretch vertically, squash horizontally
-            anim.scale_target = Vec2::new(0.7 * config.pixel_ratio, 1.4 * config.pixel_ratio);
+            let base = config.bird_scale * config.pixel_ratio;
+            anim.scale_target = Vec2::new(0.7 * base, 1.4 * base);
         }
     }
 }
@@ -52,8 +53,8 @@ pub fn update_procedural_animation(
 ) {
     for (mut transform, mut sprite, mut anim, bird) in query.iter_mut() {
         // 1. Squash & Stretch (Lerp back to normal scale)
-        anim.scale_target =
-            anim.scale_target.lerp(Vec2::splat(config.pixel_ratio), time.delta_secs() * 10.0);
+        let base = config.bird_scale * config.pixel_ratio;
+        anim.scale_target = anim.scale_target.lerp(Vec2::splat(base), time.delta_secs() * 10.0);
         transform.scale = anim.scale_target.extend(1.0); // Z=1.0 is scale identity
 
         // 2. Velocity Rotation
