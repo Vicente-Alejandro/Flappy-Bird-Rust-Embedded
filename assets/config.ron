@@ -1,6 +1,6 @@
 GameConfig(
     pixel_ratio: 4.0,
-    bird_scale: 0.5,
+    bird_scale: 0.35,
     flap_force: 500.0,
     gravity: 2000.0,
     velocity_to_rotation_ratio: 7.5,
