@@ -5,6 +5,7 @@ use bevy::window::PrimaryWindow;
 use rand::{Rng, rng};
 
 pub mod collision;
+pub mod effects;
 pub mod environment;
 pub mod player;
 
@@ -33,6 +34,7 @@ impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<Score>()
             .init_resource::<Paused>()
+            .add_systems(Startup, effects::setup_effects)
             .add_systems(OnEnter(GameState::Playing), setup_game)
             .add_systems(OnExit(GameState::Playing), cleanup_game)
             .add_systems(

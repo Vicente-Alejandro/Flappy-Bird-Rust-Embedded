@@ -49,9 +49,9 @@ The goal is not simply to ship a Flappy Bird clone. The goal is to build somethi
 - [x] **Wing flap animation** — sprite sheet cycling tied to flap input, independent of physics update loop
 
 ### Particle Systems (`bevy_hanabi`)
-- [ ] **Flap trail** — dust/air disturbance particles emitted on every jump input; opacity and spread driven by flap frequency
-- [ ] **Collision burst** — feather/pixel explosion on death; particle count and velocity driven by impact speed at collision moment
-- [ ] **Pipe pass sparkle** — subtle score-confirmation particle on successful gap navigation
+- [x] **Flap trail** — dust/air disturbance particles emitted on every jump input; opacity and spread driven by flap frequency
+- [x] **Collision burst** — feather/pixel explosion on death; particle count and velocity driven by impact speed at collision moment
+- [x] **Pipe pass sparkle** — subtle score-confirmation particle on successful gap navigation
 
 ### Camera & Screen Feedback
 - [ ] **Screen shake** — trauma-based shake system (not random; deterministic decay curve); intensity parameterized by collision speed and configurable in `.ron`

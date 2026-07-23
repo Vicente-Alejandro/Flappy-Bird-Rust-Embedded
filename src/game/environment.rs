@@ -1,5 +1,7 @@
 use crate::core::config::GameConfig;
+use crate::game::effects::ParticleEffects;
 use bevy::prelude::*;
+use bevy_hanabi::prelude::*;
 use rand::{Rng, rng, rngs::ThreadRng};
 
 #[derive(Component)]
@@ -20,6 +22,8 @@ pub fn update_obstacles(
     mut obstacle_query: Query<(&mut Obstacle, &mut Transform)>,
     mut score: ResMut<crate::game::Score>,
     mut save_data: ResMut<crate::core::save::SaveData>,
+    effects: Option<Res<ParticleEffects>>,
+    mut commands: Commands,
 ) {
     let mut rand = rng();
     let y_offset = generate_offset(&mut rand, &config);
@@ -32,6 +36,17 @@ pub fn update_obstacles(
             score.0 += 1;
             if score.0 > save_data.high_score {
                 save_data.high_score = score.0;
+            }
+            // Spawn sparkle at the pipe gap center
+            if let Some(fx) = &effects {
+                commands.spawn((
+                    ParticleEffect::new(fx.pipe_sparkle.clone()),
+                    Transform::from_translation(Vec3::new(
+                        transform.translation.x,
+                        transform.translation.y,
+                        1.0,
+                    )),
+                ));
             }
         }
 

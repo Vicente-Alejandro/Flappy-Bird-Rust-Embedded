@@ -1,5 +1,7 @@
 use crate::core::config::GameConfig;
+use crate::game::effects::ParticleEffects;
 use bevy::prelude::*;
+use bevy_hanabi::prelude::*;
 
 #[derive(Component)]
 pub struct Bird {
@@ -16,16 +18,26 @@ pub struct ProceduralAnimation {
 }
 
 pub fn handle_jump_input(
-    mut bird_query: Query<(&mut Bird, &mut ProceduralAnimation)>,
+    mut bird_query: Query<(&mut Bird, &mut ProceduralAnimation, &Transform)>,
     keys: Res<ButtonInput<KeyCode>>,
     config: Res<GameConfig>,
+    effects: Option<Res<ParticleEffects>>,
+    mut commands: Commands,
 ) {
-    if let Ok((mut bird, mut anim)) = bird_query.single_mut() {
+    if let Ok((mut bird, mut anim, transform)) = bird_query.single_mut() {
         if keys.just_pressed(KeyCode::Space) {
             bird.jump_intent = true;
             // Stretch vertically, squash horizontally
             let base = config.bird_scale * config.pixel_ratio;
             anim.scale_target = Vec2::new(0.7 * base, 1.4 * base);
+
+            // Spawn flap trail particle burst behind the bird
+            if let Some(fx) = effects {
+                commands.spawn((
+                    ParticleEffect::new(fx.flap_trail.clone()),
+                    Transform::from_translation(transform.translation.with_z(1.0)),
+                ));
+            }
         }
     }
 }

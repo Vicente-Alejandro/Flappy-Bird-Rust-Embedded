@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy::window::{MonitorSelection, WindowMode};
+use bevy_hanabi::prelude::*;
 use std::fs;
 
 mod core;
@@ -31,6 +32,7 @@ fn main() {
                 .set(ImagePlugin::default_nearest()),
         )
         // Register domain plugins
+        .add_plugins(HanabiPlugin)
         .add_plugins(core::CorePlugin)
         .add_plugins(game::GamePlugin)
         .add_plugins(ui::UiPlugin)
