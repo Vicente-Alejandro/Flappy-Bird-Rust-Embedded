@@ -2,7 +2,7 @@ use crate::core::config::GameConfig;
 use crate::core::state::GameState;
 use bevy::prelude::*;
 use bevy::window::PrimaryWindow;
-use rand::rng;
+use rand::{Rng, rng};
 
 pub mod collision;
 pub mod environment;
@@ -37,7 +37,8 @@ impl Plugin for GamePlugin {
             .add_systems(OnExit(GameState::Playing), cleanup_game)
             .add_systems(
                 Update,
-                (player::handle_jump_input, toggle_pause).run_if(in_state(GameState::Playing)),
+                (player::handle_jump_input, player::update_procedural_animation, toggle_pause)
+                    .run_if(in_state(GameState::Playing)),
             )
             .add_systems(
                 FixedUpdate,
@@ -70,14 +71,29 @@ fn setup_game(
     });
     commands.insert_resource(Paused(false));
 
+    let mut rand = rng();
+    let colors = ["bluebird", "redbird", "yellowbird"];
+    let selected_color = colors[rand.random_range(0..3)];
+    let frame0 = asset_server.load(format!("bird_spritesheets/{}-downflap.png", selected_color));
+    let frame1 = asset_server.load(format!("bird_spritesheets/{}-midflap.png", selected_color));
+    let frame2 = asset_server.load(format!("bird_spritesheets/{}-upflap.png", selected_color));
+    let frame3 = frame1.clone();
+
+    let frames = [frame0.clone(), frame1, frame2, frame3];
+
     commands.spawn((
-        Sprite { image: asset_server.load("bird.png"), ..Default::default() },
+        Sprite { image: frame0, ..Default::default() },
         Transform::IDENTITY.with_scale(Vec3::splat(config.pixel_ratio)),
         player::Bird { velocity: 0., jump_intent: false },
+        player::ProceduralAnimation {
+            scale_target: Vec2::splat(config.pixel_ratio),
+            flap_timer: Timer::from_seconds(0.1, TimerMode::Repeating),
+            frames,
+            current_frame: 0,
+        },
         GameEntity,
     ));
 
-    let mut rand = rng();
     environment::spawn_obstacles(&mut commands, &mut rand, 1080., &pipe_image, &config);
 }
 

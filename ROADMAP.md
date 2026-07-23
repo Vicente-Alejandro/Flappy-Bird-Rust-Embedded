@@ -44,9 +44,9 @@ The goal is not simply to ship a Flappy Bird clone. The goal is to build somethi
 **Goal:** Transform the functional game into a premium, tactile experience. This version is about making every single interaction feel *satisfying*. Polish is not cosmetic — it is the difference between a game people play once and a game people remember.
 
 ### Procedural Animation
-- [ ] **Squash & Stretch** — mathematical deformation on jump impulse and fall apex using `Transform` scale interpolation; makes the bird feel alive, not rigid
-- [ ] **Velocity-derivative rotation** — bird nose angle driven by `velocity.y` with `lerp` smoothing; replaces the current basic rotation with physically intuitive tilt
-- [ ] **Wing flap animation** — sprite sheet cycling tied to flap input, independent of physics update loop
+- [x] **Squash & Stretch** — mathematical deformation on jump impulse and fall apex using `Transform` scale interpolation; makes the bird feel alive, not rigid
+- [x] **Velocity-derivative rotation** — bird nose angle driven by `velocity.y` with `lerp` smoothing; replaces the current basic rotation with physically intuitive tilt
+- [x] **Wing flap animation** — sprite sheet cycling tied to flap input, independent of physics update loop
 
 ### Particle Systems (`bevy_hanabi`)
 - [ ] **Flap trail** — dust/air disturbance particles emitted on every jump input; opacity and spread driven by flap frequency
