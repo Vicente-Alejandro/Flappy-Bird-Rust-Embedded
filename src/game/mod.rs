@@ -11,16 +11,34 @@ pub mod player;
 #[derive(Resource, Default)]
 pub struct Score(pub u32);
 
+#[derive(Resource, Default)]
+pub struct Paused(pub bool);
+
 #[derive(Component)]
 pub struct GameEntity; // Marker component to despawn everything when game over
+
+fn toggle_pause(keys: Res<ButtonInput<KeyCode>>, mut paused: ResMut<Paused>) {
+    if keys.just_pressed(KeyCode::Escape) || keys.just_pressed(KeyCode::KeyP) {
+        paused.0 = !paused.0;
+    }
+}
+
+fn is_playing_and_unpaused(state: Res<State<GameState>>, paused: Res<Paused>) -> bool {
+    *state.get() == GameState::Playing && !paused.0
+}
 
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<Score>()
+            .init_resource::<Paused>()
             .add_systems(OnEnter(GameState::Playing), setup_game)
             .add_systems(OnExit(GameState::Playing), cleanup_game)
+            .add_systems(
+                Update,
+                (player::handle_jump_input, toggle_pause).run_if(in_state(GameState::Playing)),
+            )
             .add_systems(
                 FixedUpdate,
                 (
@@ -28,7 +46,7 @@ impl Plugin for GamePlugin {
                     environment::update_obstacles,
                     collision::check_collisions,
                 )
-                    .run_if(in_state(GameState::Playing)),
+                    .run_if(is_playing_and_unpaused),
             );
     }
 }
@@ -50,11 +68,12 @@ fn setup_game(
     commands.insert_resource(environment::EnvironmentData {
         window_dimensions: Vec2::new(window.width(), window.height()),
     });
+    commands.insert_resource(Paused(false));
 
     commands.spawn((
         Sprite { image: asset_server.load("bird.png"), ..Default::default() },
         Transform::IDENTITY.with_scale(Vec3::splat(config.pixel_ratio)),
-        player::Bird { velocity: 0. },
+        player::Bird { velocity: 0., jump_intent: false },
         GameEntity,
     ));
 

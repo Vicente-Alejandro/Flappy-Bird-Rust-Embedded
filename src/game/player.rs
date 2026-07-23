@@ -4,19 +4,26 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct Bird {
     pub velocity: f32,
+    pub jump_intent: bool,
+}
+
+pub fn handle_jump_input(mut bird_query: Query<&mut Bird>, keys: Res<ButtonInput<KeyCode>>) {
+    if let Ok(mut bird) = bird_query.single_mut() {
+        if keys.just_pressed(KeyCode::Space) {
+            bird.jump_intent = true;
+        }
+    }
 }
 
 pub fn update_bird_movement(
     mut bird_query: Query<(&mut Bird, &mut Transform)>,
     time: Res<Time<Fixed>>,
-    keys: Res<ButtonInput<KeyCode>>,
     config: Res<GameConfig>,
 ) {
     if let Ok((mut bird, mut transform)) = bird_query.single_mut() {
-        let jumped = keys.just_pressed(KeyCode::Space);
-
-        if jumped {
+        if bird.jump_intent {
             bird.velocity = config.flap_force;
+            bird.jump_intent = false;
         }
 
         bird.velocity -= time.delta_secs() * config.gravity;

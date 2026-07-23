@@ -8,7 +8,8 @@ pub struct CorePlugin;
 
 impl Plugin for CorePlugin {
     fn build(&self, app: &mut App) {
-        app.init_state::<state::GameState>()
+        app.insert_resource(ClearColor(Color::srgb(0.5, 0.8, 0.9)))
+            .init_state::<state::GameState>()
             .add_systems(Startup, (setup_camera, save::load_save_data))
             .add_systems(Update, save::save_save_data);
     }
