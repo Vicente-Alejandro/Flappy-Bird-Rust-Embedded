@@ -17,7 +17,7 @@ pub struct ParticleEffects {
 /// Startup system — builds all EffectAsset graphs and stores handles.
 pub fn setup_effects(mut effects: ResMut<Assets<EffectAsset>>, mut commands: Commands) {
     // ── 1. FLAP TRAIL ────────────────────────────────────────────────────────
-    // Small white puffs emitted on every jump; fall away quickly.
+    // Small white puffs emitted once on every jump; fall away quickly.
     let flap_trail = {
         let mut module = Module::default();
 
@@ -36,11 +36,12 @@ pub fn setup_effects(mut effects: ResMut<Assets<EffectAsset>>, mut commands: Com
         let init_size = SetAttributeModifier::new(Attribute::SIZE, module.lit(3.0_f32));
         let drag = LinearDragModifier::new(module.lit(6.0_f32));
 
-        let mut gradient: Gradient<Vec4> = Gradient::new();
+        let mut gradient = Gradient::<Vec4>::new();
         gradient.add_key(0.0, Vec4::new(1.0, 1.0, 1.0, 0.8));
         gradient.add_key(1.0, Vec4::new(1.0, 1.0, 1.0, 0.0));
 
-        let asset = EffectAsset::new(64, SpawnerSettings::burst(12.0.into(), 0.0.into()), module)
+        // SpawnerSettings::once fires a single burst of N particles, no period needed
+        let asset = EffectAsset::new(64, SpawnerSettings::once(12.0.into()), module)
             .with_name("flap_trail")
             .init(init_pos)
             .init(init_vel)
@@ -76,12 +77,12 @@ pub fn setup_effects(mut effects: ResMut<Assets<EffectAsset>>, mut commands: Com
         let init_size = SetAttributeModifier::new(Attribute::SIZE, module.lit(5.0_f32));
         let gravity = AccelModifier::new(module.lit(Vec3::new(0.0, -200.0, 0.0)));
 
-        let mut gradient: Gradient<Vec4> = Gradient::new();
+        let mut gradient = Gradient::<Vec4>::new();
         gradient.add_key(0.0, Vec4::new(1.0, 0.5, 0.1, 1.0)); // orange
         gradient.add_key(0.5, Vec4::new(0.9, 0.2, 0.1, 0.8)); // red-orange
         gradient.add_key(1.0, Vec4::new(0.5, 0.1, 0.1, 0.0)); // fade
 
-        let asset = EffectAsset::new(128, SpawnerSettings::burst(40.0.into(), 0.0.into()), module)
+        let asset = EffectAsset::new(128, SpawnerSettings::once(40.0.into()), module)
             .with_name("collision_burst")
             .init(init_pos)
             .init(init_vel)
@@ -117,12 +118,12 @@ pub fn setup_effects(mut effects: ResMut<Assets<EffectAsset>>, mut commands: Com
         let init_size = SetAttributeModifier::new(Attribute::SIZE, module.lit(4.0_f32));
         let drag = LinearDragModifier::new(module.lit(8.0_f32));
 
-        let mut gradient: Gradient<Vec4> = Gradient::new();
+        let mut gradient = Gradient::<Vec4>::new();
         gradient.add_key(0.0, Vec4::new(1.0, 1.0, 0.3, 1.0)); // bright yellow
         gradient.add_key(0.5, Vec4::new(1.0, 0.8, 0.1, 0.7));
         gradient.add_key(1.0, Vec4::new(1.0, 0.6, 0.0, 0.0)); // fade to orange
 
-        let asset = EffectAsset::new(64, SpawnerSettings::burst(16.0.into(), 0.0.into()), module)
+        let asset = EffectAsset::new(64, SpawnerSettings::once(16.0.into()), module)
             .with_name("pipe_sparkle")
             .init(init_pos)
             .init(init_vel)
@@ -138,5 +139,9 @@ pub fn setup_effects(mut effects: ResMut<Assets<EffectAsset>>, mut commands: Com
         effects.add(asset)
     };
 
-    commands.insert_resource(ParticleEffects { flap_trail, collision_burst, pipe_sparkle });
+    commands.insert_resource(ParticleEffects {
+        flap_trail,
+        collision_burst,
+        pipe_sparkle,
+    });
 }
