@@ -58,7 +58,7 @@ fn menu_input(keys: Res<ButtonInput<KeyCode>>, mut next_state: ResMut<NextState<
     }
 }
 
-fn setup_game_over(mut commands: Commands, save_data: Res<SaveData>) {
+fn setup_game_over(mut commands: Commands, save_data: Res<SaveData>, score: Res<Score>) {
     commands
         .spawn((
             Node {
@@ -76,6 +76,11 @@ fn setup_game_over(mut commands: Commands, save_data: Res<SaveData>) {
                 Text::new("GAME OVER"),
                 TextFont { font_size: bevy::text::FontSize::Px(80.0), ..default() },
                 TextColor(Color::srgb(1.0, 0.2, 0.2)),
+            ));
+            parent.spawn((
+                Text::new(format!("Score: {}", score.0)),
+                TextFont { font_size: bevy::text::FontSize::Px(50.0), ..default() },
+                TextColor(Color::WHITE),
             ));
             parent.spawn((
                 Text::new(format!("High Score: {}", save_data.high_score)),
@@ -104,20 +109,18 @@ fn cleanup_menu(mut commands: Commands, query: Query<Entity, With<MenuUi>>) {
 
 fn setup_hud(mut commands: Commands) {
     commands
-        .spawn((
-            Node {
-                position_type: PositionType::Absolute,
-                top: Val::Px(20.0),
-                left: Val::Percent(50.0),
-                ..default()
-            },
-            ScoreText,
-        ))
+        .spawn((Node {
+            position_type: PositionType::Absolute,
+            top: Val::Px(20.0),
+            left: Val::Percent(50.0),
+            ..default()
+        },))
         .with_children(|parent| {
             parent.spawn((
                 Text::new("0"),
                 TextFont { font_size: bevy::text::FontSize::Px(60.0), ..default() },
                 TextColor(Color::WHITE),
+                ScoreText,
             ));
         });
 }
