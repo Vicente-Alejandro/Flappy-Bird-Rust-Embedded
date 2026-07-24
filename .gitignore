@@ -1,2 +1,7 @@
 /target
 /data/
+
+# Ignore cargo-qc tool files
+/tools/cargo-qc/src/
+/tools/cargo-qc/README.md
+/tools/cargo-qc/Cargo.toml
