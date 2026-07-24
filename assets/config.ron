@@ -11,4 +11,5 @@ GameConfig(
     obstacle_gap_size: 15.0,
     obstacle_spacing: 60.0,
     obstacle_scroll_speed: 150.0,
+    camera_lead_strength: 60.0,
 )

@@ -16,8 +16,14 @@ pub struct GameConfig {
     pub obstacle_gap_size: f32,
     pub obstacle_spacing: f32,
     pub obstacle_scroll_speed: f32,
+    #[serde(default = "default_camera_lead_strength")]
+    pub camera_lead_strength: f32,
 }
 
 fn default_bird_scale() -> f32 {
     1.0
+}
+
+fn default_camera_lead_strength() -> f32 {
+    60.0
 }
