@@ -55,7 +55,7 @@ The goal is not simply to ship a Flappy Bird clone. The goal is to build somethi
 
 ### Camera & Screen Feedback
 - [ ] **Screen shake** — trauma-based shake system (not random; deterministic decay curve); intensity parameterized by collision speed and configurable in `.ron`
-- [ ] **Camera lead** — camera slightly anticipates bird movement direction, giving the player more reaction time without changing physics
+- [x] **Camera lead** — camera drifts slightly ahead of the bird’s movement direction; gives player more visual runway to reaction time without changing physics
 
 ### Audio System (`bevy_kira_audio`)
 - [ ] **Spatial stereo panning** — pipes panned right-to-left as they cross the bird's x-position; adds depth without 3D
@@ -72,7 +72,7 @@ The goal is not simply to ship a Flappy Bird clone. The goal is to build somethi
 - [ ] **Coyote Time** — configurable grace window (default: 80ms) allowing a jump input just before ground/pipe collision; dramatically reduces cheap deaths without affecting skilled play; value in `.ron`
 - [ ] **Input buffer** — flap input buffered for ~80ms so rapid taps during brief physics lag are never dropped
 - [ ] **Score combo multiplier** — consecutive pipe passes without near-misses build a visual multiplier (×1 → ×2 → ×3); resets on near-miss; shown in HUD
-- [ ] **Difficulty curve** — pipe speed and gap size adjust dynamically based on score thresholds (configurable in `.ron`); prevents the game from plateauing
+- [x] **Difficulty curve** — obstacle speed ramps up every N points; configurable acceleration and speed cap in `.ron`
 
 ### Settings & Accessibility Screen
 - [ ] **In-game settings panel** — accessible from pause menu; controls: SFX volume, music volume, bloom toggle, CRT toggle, coyote time on/off

@@ -139,9 +139,5 @@ pub fn setup_effects(mut effects: ResMut<Assets<EffectAsset>>, mut commands: Com
         effects.add(asset)
     };
 
-    commands.insert_resource(ParticleEffects {
-        flap_trail,
-        collision_burst,
-        pipe_sparkle,
-    });
+    commands.insert_resource(ParticleEffects { flap_trail, collision_burst, pipe_sparkle });
 }

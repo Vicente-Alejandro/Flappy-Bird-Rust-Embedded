@@ -18,6 +18,12 @@ pub struct GameConfig {
     pub obstacle_scroll_speed: f32,
     #[serde(default = "default_camera_lead_strength")]
     pub camera_lead_strength: f32,
+    /// Speed added per point scored (difficulty ramp).
+    #[serde(default = "default_speed_increase_per_score")]
+    pub speed_increase_per_score: f32,
+    /// Hard cap on obstacle scroll speed regardless of score.
+    #[serde(default = "default_max_obstacle_scroll_speed")]
+    pub max_obstacle_scroll_speed: f32,
 }
 
 fn default_bird_scale() -> f32 {
@@ -26,4 +32,12 @@ fn default_bird_scale() -> f32 {
 
 fn default_camera_lead_strength() -> f32 {
     60.0
+}
+
+fn default_speed_increase_per_score() -> f32 {
+    2.0
+}
+
+fn default_max_obstacle_scroll_speed() -> f32 {
+    350.0
 }

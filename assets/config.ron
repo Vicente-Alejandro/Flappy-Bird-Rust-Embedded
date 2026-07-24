@@ -12,4 +12,6 @@ GameConfig(
     obstacle_spacing: 60.0,
     obstacle_scroll_speed: 150.0,
     camera_lead_strength: 60.0,
+    speed_increase_per_score: 2.0,
+    max_obstacle_scroll_speed: 350.0,
 )

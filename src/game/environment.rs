@@ -27,8 +27,13 @@ pub fn update_obstacles(
 ) {
     let mut rand = rng();
     let y_offset = generate_offset(&mut rand, &config);
+    // Difficulty curve: speed increases with score, capped at max
+    let current_speed = (config.obstacle_scroll_speed
+        + config.speed_increase_per_score * score.0 as f32)
+        .min(config.max_obstacle_scroll_speed);
+
     for (mut obstacle, mut transform) in obstacle_query.iter_mut() {
-        transform.translation.x -= time.delta_secs() * config.obstacle_scroll_speed;
+        transform.translation.x -= time.delta_secs() * current_speed;
 
         // Scoring logic (if passing center where bird is at x=0)
         if !obstacle.scored && transform.translation.x < 0.0 && obstacle.pipe_direction == 1. {
