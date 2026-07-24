@@ -44,9 +44,9 @@ fn camera_lead(
     let target_x = (bird.velocity / config.flap_force).clamp(-0.5, 1.0) * lead_strength;
     let target_y = 0.0_f32;
 
-    // Smooth interpolation so the camera doesn't snap
+    // Smooth interpolation — low lerp factor keeps motion very subtle
     cam_transform.translation.x =
-        cam_transform.translation.x.lerp(target_x, time.delta_secs() * 4.0);
+        cam_transform.translation.x.lerp(target_x, time.delta_secs() * 1.5);
     cam_transform.translation.y =
-        cam_transform.translation.y.lerp(target_y, time.delta_secs() * 3.0);
+        cam_transform.translation.y.lerp(target_y, time.delta_secs() * 1.2);
 }
