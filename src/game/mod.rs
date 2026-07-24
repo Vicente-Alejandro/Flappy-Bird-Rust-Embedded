@@ -89,7 +89,7 @@ fn setup_game(
         player::Bird { velocity: 0., jump_intent: false },
         player::ProceduralAnimation {
             scale_target: Vec2::splat(config.bird_scale * config.pixel_ratio),
-            flap_timer: Timer::from_seconds(0.1, TimerMode::Repeating),
+            flap_timer: Timer::from_seconds(0.06, TimerMode::Repeating),
             frames,
             current_frame: 0,
         },

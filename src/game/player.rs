@@ -63,10 +63,22 @@ pub fn update_procedural_animation(
         let target_quat = Quat::from_axis_angle(Vec3::Z, target_angle);
         transform.rotation = transform.rotation.slerp(target_quat, time.delta_secs() * 15.0);
 
-        // 3. Wing Flapping
-        anim.flap_timer.tick(time.delta());
-        if anim.flap_timer.just_finished() {
-            anim.current_frame = (anim.current_frame + 1) % anim.frames.len();
+        // 3. Wing Flapping (Dynamic based on velocity)
+        let mut flap_speed = 1.0;
+        if bird.velocity < 0.0 {
+            // As the bird falls, slow down the flap until it stops
+            flap_speed = (1.0 + bird.velocity / config.flap_force).max(0.0);
+        }
+
+        if flap_speed > 0.0 {
+            anim.flap_timer.tick(time.delta().mul_f32(flap_speed));
+            if anim.flap_timer.just_finished() {
+                anim.current_frame = (anim.current_frame + 1) % anim.frames.len();
+                sprite.image = anim.frames[anim.current_frame].clone();
+            }
+        } else {
+            // When falling fast, lock to midflap (frame 1) to simulate gliding
+            anim.current_frame = 1;
             sprite.image = anim.frames[anim.current_frame].clone();
         }
     }
